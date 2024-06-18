@@ -2,34 +2,34 @@ import React, { Component, useContext, useEffect, useState } from "react";
 import { Context } from "../context";
 import PostService from "../API/PostService";
 import { Link } from "react-router-dom";
+import {formatDate, convertBackDateFormat} from '../utils' 
 
 const SideMenu = () => {
 
-	const [idSelectInsensive, setIdSelectInsensive] = useContext(Context);
+	const [visible, setVisible] = useState(false);
 	const [data, setData] = useState();
 
 	useEffect(() => {
 		
 		const fetchData = async () => {
-			const id = (idSelectInsensive && idSelectInsensive > 0)
-			    ? idSelectInsensive
-				: Number(localStorage.getItem('id'));
+			const id = Number(localStorage.getItem('id'));
 			try{
 				await PostService.getIntensiv(id).then((res) => {
 					setData(res.data);
 					console.log(res.data);
+					setVisible(true);
 				});
 			}catch(e){
-				window.location.href='/intensives'
+				setVisible(false);
 			}
-			
-
 		};
 
 		fetchData();
-	}, [idSelectInsensive])
+	}, [])
 
 	return (
+		(visible)?
+		(
 		<div className="side-menu-cont">
 			<div className="column-container">
 				<div className="title-block">
@@ -45,20 +45,30 @@ const SideMenu = () => {
 			<div className="column-container">
 				<div className="title-block column-container">
 					<div className="font-18">{data?.name}</div>
-					<div className="font-14 color-title">10.01.2021-21.09.2022</div>
+					<div className="font-14 color-title">
+						{
+							(data)?
+							(formatDate(convertBackDateFormat(data?.created_at)))+
+							' - '+
+							(formatDate(convertBackDateFormat(data?.close_dt))||'дата окончания не проставлена')
+							:null
+						}
+						</div>
 				</div>
 
 				<div className="header-list-conainer column-container">
-					<Link to='/intensiv' >Настройки интенсива</Link>
-					<Link to='/statisticsIntensive' >Статистика</Link>
-					<Link to='/commands' >Управление командами</Link>
-					<Link to='/plan' >План интенсива</Link>
-					<Link to='/manageMenu' >Управление системой</Link>
+					<Link to='/intensiv' className="elem-list">Настройки интенсива</Link>
+					<Link to='/statisticsIntensive' className="elem-list" >Статистика</Link>
+					<Link to='/commands' className="elem-list" >Управление командами</Link>
+					<Link to='/plan' className="elem-list" >План интенсива</Link>
+					<Link to='/manageMenu' className="elem-list" >Управление системой</Link>
 				</div>
 			</div>
 		</div>
+		):
+		null
 
-	);
+	)
 }
 
 export default SideMenu;

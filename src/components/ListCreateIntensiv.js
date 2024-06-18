@@ -11,11 +11,16 @@ import PostService from "../API/PostService";
 import { useContext } from "react";
 import { Context } from "../context";
 import { Link } from "react-router-dom";
+import {convertDateFormat,
+   convertBackDateFormat,
+    filterNotIncludeObjectsByNames,
+    filterIncludeObjectsByNames
+  } from '../utils';
 
 const ListCreateIntensiv = (props) => {
   const [showCrit, setShowCrit] = useState(false);
+  const [hasIntensive, setHasIntensive] = useState(false);
 
-  const [idSelectInsensive, setIdSelectInsensive] = useContext(Context);
 
   const [intensiveName, setIntensiveName] = useState("");
   const [intensiveDescription, setIntensiveDescription] = useState("");
@@ -48,49 +53,82 @@ const ListCreateIntensiv = (props) => {
       : setItemsWindow([]);
   }, [windowTeachers, windowFlows, windowStudRoles]);
 
+
+
   useEffect(() => {
     const fetchData = async () => {
-      await Promise.all([
+      await Promise.allSettled([
         PostService.getTeachers(),
         PostService.getFlows(),
         PostService.getStudenRoles(),
-        
+        PostService.getIntensiv(localStorage.getItem('id'))
       ]).then((response) => {
+        console.log('response',response);
         setResponseTeachers(
-          response[0].data.results.map((teacher) => {
+          response[0].value.data.results.map((teacher) => {
             return { id: teacher.user.id, name: teacher.user.last_name };
           })
         );
-        setResponseFlows(response[1].data.results);
-        setResponseStudentRoles(response[2].data.results);
+        setResponseFlows(response[1].value.data.results);
+        console.log(responseFlows);
+        setResponseStudentRoles(response[2].value.data.results);
+        if(response[3].status === "fulfilled"){
+          console.log('hhdhf',response[3]);
+          setHasIntensive(true);
+          setIntensiveName(response[3].value.data.name);
+          setIntensiveDescription(response[3].value.data.description);
+          setDateStart(convertBackDateFormat(response[3].value.data.created_at));
+          ( response[3].value.data.close_dt)? setDateEnd(convertBackDateFormat(response[3].value.data.close_dt)): setDateEnd('');
+          setFlows(filterIncludeObjectsByNames(response[1].value.data.results, response[3].value.data.flow));
+          setResponseFlows(filterNotIncludeObjectsByNames(response[1].value.data.results, response[3].value.data.flow));
+          setStudentRoles(filterIncludeObjectsByNames(response[2].value.data.results, response[3].value.data.roles));
+          setResponseFlows(filterNotIncludeObjectsByNames(response[2].value.data.results, response[3].value.data.roles));
+          setTeachers(response[3].value.data.teacher_command.map((teacher) => {
+            return { id: teacher.teacher.user.id, name: teacher.teacher.user.last_name };
+          }))
+        }
       });
     };
 
     fetchData();
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     // e.preventDefault();
     try {
       const ids_studentRoles = studentRoles?.map((item) => item.id);
       const ids_flows = flows?.map((item) => item.id);
       const ids_teachers = teachers?.map((item) => item.id);
-      const response = PostService.postIntensives(
+      const response = 
+      (hasIntensive)?
+      await PostService.patchIntensives(
         intensiveName,
         intensiveDescription,
-        "2024-06-11T16:35:51.736Z",
-        "2024-06-11T16:35:51.736Z",
+        convertDateFormat(dateStart),
+        convertDateFormat(dateEnd),
         ids_flows,
         ids_teachers,
         ids_studentRoles
-      ).then(res=>{ setIdSelectInsensive(res.data.id)});
+      )
+      :
+      await PostService.postIntensives(
+        intensiveName,
+        intensiveDescription,
+        convertDateFormat(dateStart),
+        convertDateFormat(dateEnd),
+        ids_flows,
+        ids_teachers,
+        ids_studentRoles
+      )
 
       if (response) {
+        localStorage.setItem('id',response.data.id)
       } 
 		else {
       }
     } catch (error) {
       console.error(error);
+      console.log();
       alert("Ошибка авторизации");
     }
   };
@@ -133,7 +171,10 @@ const ListCreateIntensiv = (props) => {
           />
           <div className="list-content column-container">
             <div className="title ">
-              <div className="font-32">Создать интенсив</div>
+              <div className="font-32">{(hasIntensive)?
+              'Редактировать интенсив':
+              'Создать интенсив'}
+              </div>
             </div>
             <div className="column-container">
               <div className="element-list-input">
@@ -257,12 +298,12 @@ const ListCreateIntensiv = (props) => {
                 </div>
                 <div>
                   <Link
-                   to={`/intensiv`}
+                  //  to={`/intensiv`}
                     className="button-classic margin element-list-input"
                     type="submit"
                     onClick={handleSubmit}
                   >
-                    Создать интенсив
+                    {(hasIntensive)?'Редактировать интенсив':'Создать интенсив'}
                   </Link>
                 </div>
               </form>

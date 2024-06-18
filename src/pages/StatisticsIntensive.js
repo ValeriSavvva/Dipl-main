@@ -11,24 +11,25 @@ const StatisticsIntensive = () => {
 	const [statisticsData, setStatisticsData] = useState([]);
 
 	const transformDataResponse = (response) => {
-		setStatisticsData(response.map(item => ({ score: item.final_mark || (Math.floor(Math.random() * 6)), name: (item.student.user.last_name || 'bdbfd') }))
+		console.log(response);
+		setStatisticsData(response.map(item => ({ score: item.final_mark || 0, name: (item.student.last_name ) }))
 			.filter(obj => obj.hasOwnProperty('name'))
 			.sort((a, b) => a.name.localeCompare(b.name)))
 	}
 
 	useEffect(() => {
 		const fetchData = async () => {
-			// try {
-			// 	await PostService.getStatisticsIntensiv(1).then((response) => { setResponseStatInt(response.data); transformDataResponse(response.data) });
-			// } catch (e) {
-			// 	console.log(e);
-			// }
-
 			try {
-				await PostService.getStatisticsCommand(1).then((response) => { console.log(response.data); transformDataResponse(response.data) });
+				await PostService.getStatisticsIntensiv(localStorage.getItem('id')).then((response) => { setResponseStatInt(response.data); transformDataResponse(response.data) });
 			} catch (e) {
 				console.log(e);
 			}
+
+			// try {
+			// 	await PostService.getStatisticsCommand(1).then((response) => { console.log(response.data); transformDataResponse(response.data) });
+			// } catch (e) {
+			// 	console.log(e);
+			// }
 
 		};
 

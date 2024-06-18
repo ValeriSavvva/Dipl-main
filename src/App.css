@@ -1,5 +1,6 @@
 .body {
   display: flex;
+  max-width: 100%;
 }
 
 
@@ -133,6 +134,7 @@
 
 
 .main-block {
+  max-width: 100vw;
   display: flex;
   justify-content: center;
   /* background-color: #3a3f47; */
@@ -322,7 +324,9 @@
 }
 
 
-table {}
+.table {
+  max-width: 95vw;
+}
 
 
 table tr {
@@ -335,6 +339,7 @@ table td {
   padding: 5px 10px;
   text-wrap: wrap;
   font-size: 16px;
+  text-overflow: ellipsis;
 }
 
 

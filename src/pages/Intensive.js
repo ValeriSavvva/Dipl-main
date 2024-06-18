@@ -7,25 +7,32 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useContext } from "react";
 import { Context } from "../context";
+import { Link } from "react-router-dom";
+import {convertDateFormat,
+  convertBackDateFormat,
+  formatDate,
+   filterNotIncludeObjectsByNames,
+   filterIncludeObjectsByNames
+ } from '../utils';
 
 const Intensiv = (props) => {
   const [data, setData] = useState();
-  const [idSelectInsensive, setIdSelectInsensive] = useContext(Context);
 
   useEffect(() => {
-    console.log("idSelectInsensive", idSelectInsensive);
     const fetchData = async () => {
-        // const id = (idSelectInsensive && idSelectInsensive > 0)
-        //     ? idSelectInsensive
-        //     : Number(localStorage.get('id'));
-        await PostService.getIntensiv(idSelectInsensive).then((res) => {
+      try{
+        const id = Number(localStorage.getItem('id'));
+        await PostService.getIntensiv(id).then((res) => {
           setData(res.data);
         });
+      }catch(e){
+        window.location.href='/intensives';
+      }
       
     };
 
     fetchData();
-  }, [idSelectInsensive]);
+  });
 
   return (
     <div className="body">
@@ -42,7 +49,14 @@ const Intensiv = (props) => {
             </div>
             <div className="column-container">
               <div className="element-list-input">
-                <div className="font-18 bold-font">01.01.2023 - 30.01.2023</div>
+                <div className="font-18 bold-font">{
+                  (data)?
+                  (formatDate(convertBackDateFormat(data?.created_at)))+
+                  ' - '+
+                  (formatDate(convertBackDateFormat(data?.close_dt))||'дата окончания не проставлена')
+                  :null
+                }
+                </div>
               </div>
 
               <div className="element-list-input">
@@ -93,6 +107,10 @@ const Intensiv = (props) => {
                       <Skeleton></Skeleton>
                     )}
                   </div>
+                </div>
+                <div className="element-list-input flex">
+                    <button className="button-classic "><Link to='/createIntensive'>Редактировать </Link></button>
+                    <button onClick={()=>PostService.deleteIntensiv(localStorage.getItem('id'))}>Удалить</button>
                 </div>
               </div>
             </div>

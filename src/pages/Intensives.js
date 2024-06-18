@@ -3,6 +3,7 @@ import PostService from "../API/PostService";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Context } from "../context";
+import{formatDate,convertBackDateFormat} from '../utils';
 
 const Intensives = () => {
 
@@ -27,7 +28,7 @@ const Intensives = () => {
 
     fetchData();
 
-    setIdSelectInsensive(-1);
+    localStorage.setItem('id', -1)
   }, []);
 
   const fillIntensiveTable=()=> {
@@ -35,14 +36,14 @@ const Intensives = () => {
       return null;
     }
     let intensives = data?.results.map((results) => (
-		 <Link to={'/intensiv'} onClick={() => { setIdSelectInsensive(results.id) }} key={results.id} className="border-b">
-        <td className="px-6 py-4 ">{results.name}</td>
+		 <tr key={results.id} className="border-b">
+        <td className="px-6 py-4 "><Link to={'/intensiv'} onClick={() => { localStorage.setItem('id', results.id)}}>{results.name} </Link></td>
         <td className="px-6 py-4">{results.description}</td>
-        <td className="px-6 py-4">{results.created_at}</td>
-        <td className="px-6 py-4">{results.updated_at}</td>
-        <td className="px-6 py-4">
+        <td className="px-6 py-4">{formatDate(convertBackDateFormat(results.created_at))}</td>
+        <td className="px-6 py-4">{formatDate(convertBackDateFormat(results.updated_at))}</td>
+        <td className="px-6 py-4">{results.flow.map((elem)=>(elem))}
         </td>
-      </Link>
+        </tr>
     ));
 
     return intensives;
@@ -101,7 +102,7 @@ const Intensives = () => {
                 </div>
               </div>
               <div className="overflow-x-auto bg-white rounded-lg">
-                <table className="border rounded">
+                <table className="border rounded table">
                   <thead className="bg-[#F1F5F9] border-b">
                     <tr>
                       <th className="px-6 py-3 text-left font-semibold">
