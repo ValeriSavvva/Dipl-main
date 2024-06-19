@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import PostService from '../API/PostService';
+import { useEffect } from 'react';
+import { InputDescription } from '../components/InputDescription';
 
 const Authorization = () => {
   const [login, setLogin] = useState('');
@@ -17,7 +19,7 @@ const Authorization = () => {
       //   Перенаправляем пользователя на защищенную страницу
 			console.log(response)
 		  
-      //   window.location.href = '/intensives';
+      window.location.href = '/intensives';
       } else {
         alert('NOBODY');
       }
@@ -26,19 +28,33 @@ const Authorization = () => {
       alert('Ошибка авторизации');
     }
   };
+  useEffect(()=>{
+    if(document.cookie.split("=")[1]) window.location.href = '/intensives'
+  },[])
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Логин 
-        <input type="text" value={login} onChange={(e) => setLogin(e.target.value)} />
-      </label>
-      <label>
-        Пароль 
-        <input type="text" value={pass} onChange={(e) => setPass(e.target.value)} />
-      </label>
-      <button type="submit">Войти</button>
+    <div className="body">
+      <div className="main-block">
+        <div className="center-block">
+          <div className="list-content column-container">
+            <div className="title font-32">Авторизация</div>
+    <form onSubmit={handleSubmit} className='column-container'>
+    <InputDescription
+                    valueProp={login}
+                    onChange={setLogin}
+                    descriptionProp={"Логин"}
+                  />
+     <InputDescription
+                    valueProp={pass}
+                    onChange={setPass}
+                    descriptionProp={"Пароль"}
+                  />
+      <button className='button-classic' type="submit">Войти</button>
     </form>
+    </div>
+    </div>
+    </div>
+    </div>
   );
 };
 

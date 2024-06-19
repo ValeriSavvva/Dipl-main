@@ -1,103 +1,140 @@
 import { useEffect, useState } from "react";
 import SideMenu from "../components/SideMenu";
 import PostService from "../API/PostService";
-import arowBut from '../icons/arowBut.svg';
+import arowBut from "../icons/arowBut.svg";
+import { convertBackDateFormatDMY, convertDateFormat } from "../utils";
+import { Link } from "react-router-dom";
 
 const Plan = () => {
+  const [responseEvent, setResponseEvent] = useState([]);
 
-	useEffect(() => {
+  // Создаем объект для хранения результатов
+  const [prepareEvent, setPrepareEvent] = useState([]);
 
-	})
+  const prepareE = (arr) => {
+    if (arr.length > 0) {
+      let result = {};
+      arr.forEach((obj) => {
+        let objStage = obj.stage ?? "without";
+        if (!result[objStage]) {
+          result[obj.stage ? obj.stage : "without"] = {
+            id: objStage,
+            data: [],
+          };
+        }
+        result[objStage].data.push({
+          name: obj.name,
+          dataStart: convertBackDateFormatDMY(obj.start_dt),
+          dataEnd: convertBackDateFormatDMY(obj.finish_dt),
+		  id: obj.id,
+        });
+      });
+      const finalResult = Object.values(result);
+      setPrepareEvent(finalResult);
+      console.log("prepareEvent", prepareEvent);
+    }
+  };
 
-	const Stage = ({ title, dateRange, steps }) => (
-		<section className="flex flex-col justify-center items-start px-4 py-4 w-full leading-[150%] max-md:max-w-full">
-			<h2 className="font-bold font-18">{title}</h2>
-			<time className="color-title font-14">{dateRange}</time>
-			{steps.map((step, index) => (
-				<div key={index} className="flex p-4" >
-					<img loading="lazy" src={step.imageSrc} alt="" className="p-2" />
-					<div className="flex flex-col justify-center">
-						<p className="p-1 text-base font-16">{step.title}</p>
-						<time className="p-1 text-sm font-14">{step.date}</time>
-					</div>
-				</div>
-			))}
-		</section>
-	);
+  useEffect(() => {
+    const fetchData = async () => {
+      const idIntensive = localStorage.getItem("id");
+      await Promise.all([PostService.getEvents(idIntensive)]).then(
+        (response) => {
+          console.log("response", response);
+          prepareE(response[0].data.results);
+          setResponseEvent(
+            response[0].data.results.map((event) => {
+              return {
+                id: event.id,
+                name: event.name,
+                dataStart: event.start_dt,
+                dataEnd: event.finish_dt,
+                stage: event.stage,
+              };
+            })
+          );
+        }
+      );
+    };
+
+    fetchData();
+  }, []);
+
+  const Stage = (data) => (
+    <section
+      className="flex flex-col justify-center items-start px-4 py-4 w-full leading-[150%] max-md:max-w-full"
+    >
+      <h2 className="font-bold font-18">Мероприятия вне этапов</h2>
+      {/* <time className="color-title font-14">{dateRange}</time> */}
+      {data.steps.map((step) => (
+        <div key={step.name} className="flex p-4"
+		onClick={() => {
+			localStorage.setItem("idEvent", step.id);
+			window.location.href="/editEvent";
+		  }}>
+          <div className="flex flex-col justify-center">
+            <p className="p-1 text-base font-18">{step.name}</p>
+            <time className="p-1 text-sm text-[#336699]/[.35] font-14">
+              {step.dataStart + " " + step.dataEnd}
+            </time>
+          </div>
+        </div>
+      ))}
+    </section>
+  );
 
 
+  return (
+    <div className="body">
+      <SideMenu />
+      <div className="main-block">
+        <div className="center-block">
+          <div className="column-container">
+            <div className="title flex justify-between align-center">
+              <div className="font-32">План интенсива</div>
+              <button className="button-ser flex gap">
+                <div className=" font-bold font-14">Редактировать</div>
+                <img
+                  height={10}
+                  width={10}
+                  loading="lazy"
+                  src={arowBut}
+                  className="aspect-[0.96] fill-black"
+                />
+              </button>
+            </div>
+            <div className="space"></div>
+			{
+				(prepareEvent.length>0)?
+				prepareEvent.map((elem) => (
+					<Stage
+					  key={elem.id}
+					  // title={stage.title}
+					  // dateRange={stage.dateRange}
+					  steps={elem.data}
+					/>
+				  ))
+				  :
+				  <div className="gap_25" style={{
+					height: '100%',
+					display: 'flex',
+					flexDirection: 'column',
+					justifyContent: 'center'
+				  }}>
+					<div className="justify-center flex">Пока расписание пусто, добавьте мероприятия</div>
+					<Link className="text-blue-500"
+					style={{
+						display: 'flex',
+						justifyContent: 'center'
+					}} to={'/editEvent'} onClick={()=>{localStorage.removeItem('idEvent')}}>Добавить</Link>
+				  </div>
+			}
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-	const stages = [
-		{
-			title: "Этап Знакомство с темой",
-			dateRange: "12.09.21 - 13.09.21",
-			steps: [
-				{
-					title: "Презентация тем командам",
-					date: "12.09.21 - 12.09.21",
-					imageSrc: "https://cdn.builder.io/api/v1/image/assets/TEMP/4c52598e48a7b62724fc32f6709ff87fe408e7418fc4cedb28c713d76c2c7279?apiKey=846541071cbf40a28d303604e165349a&",
-				},
-			],
-		},
-		{
-			title: "Этап Формулировка идеи",
-			dateRange: "14.09.21 - 15.09.21",
-			steps: [
-				{
-					title: "Выступление команд",
-					date: "14.09.21 - 14.09.21",
-					imageSrc: "https://cdn.builder.io/api/v1/image/assets/TEMP/4c52598e48a7b62724fc32f6709ff87fe408e7418fc4cedb28c713d76c2c7279?apiKey=846541071cbf40a28d303604e165349a&",
-				},
-			],
-		},
-		{
-			title: "Этап Реализация",
-			dateRange: "15.09.21 - 15.10.21",
-			steps: [
-				{
-					title: "Защита проектов",
-					date: "15.10.21 - 16.10.21",
-					imageSrc: "https://cdn.builder.io/api/v1/image/assets/TEMP/4c52598e48a7b62724fc32f6709ff87fe408e7418fc4cedb28c713d76c2c7279?apiKey=846541071cbf40a28d303604e165349a&",
-				},
-			],
-		},
-	];
-
-	return (
-		<div className="body">
-			<SideMenu />
-			<div className="main-block">
-				<div className="center-block">
-					<div className="column-container">
-						<div className="title flex justify-between align-center">
-							<div className="font-32">План интенсива</div>
-							<button className='button-ser flex gap'>
-								<div className=" font-bold font-14">Редактировать</div>
-								<img
-									height={10}
-									width={10}
-									loading="lazy"
-									src={arowBut}
-									className="aspect-[0.96] fill-black"
-								/>
-							</button>
-						</div>
-						<div className="space"></div>
-						{stages.map((stage, index) => (
-							<Stage
-								key={index}
-								title={stage.title}
-								dateRange={stage.dateRange}
-								steps={stage.steps}
-							/>
-						))}
-					</div>
-
-				</div>
-			</div>
-		</div>
-	)
-}
-
-export default Plan
-
+export default Plan;

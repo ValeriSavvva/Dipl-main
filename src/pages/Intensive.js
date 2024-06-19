@@ -71,10 +71,10 @@ const Intensiv = (props) => {
               </div>
               <div className="element-list-input column-container">
                 <div className="">Список учебных потоков</div>
-                <div className="flex">
+                <div className="flex flex-wrap">
                   {data ? (
                     data.flow.map((elem) => (
-                      <div className="ml-4 text-sm element-st">{elem}</div>
+                      <div className="ml-4 text-sm selectedInList">{elem}</div>
                     ))
                   ) : (
                     <Skeleton></Skeleton>
@@ -82,10 +82,10 @@ const Intensiv = (props) => {
                 </div>
                 <div className="element-list-input column-container">
                   <div className="">Список ролей для студентов</div>
-                  <div className="flex">
+                  <div className="flex flex-wrap">
                     {data ? (
                       data.roles.map((elem) => (
-                        <div className="ml-4 text-sm element-st">{elem}</div>
+                        <div className="ml-4 text-sm selectedInList">{elem}</div>
                       ))
                     ) : (
                       <Skeleton></Skeleton>
@@ -94,11 +94,11 @@ const Intensiv = (props) => {
                 </div>
                 <div className="element-list-input column-container">
                   <div className="">Список преподавателей</div>
-                  <div className="flex">
+                  <div className="flex flex-wrap">
                     {data ? (
                       data.teacher_command.lenght ? (
                         data.teacher_command.map((elem) => (
-                          <div className="ml-4 text-sm element-st">{elem}</div>
+                          <div className="ml-4 text-sm selectedInList">{elem}</div>
                         ))
                       ) : (
                         <div>Преподаватели не выбраны</div>
@@ -108,9 +108,9 @@ const Intensiv = (props) => {
                     )}
                   </div>
                 </div>
-                <div className="element-list-input flex">
-                    <button className="button-classic "><Link to='/createIntensive'>Редактировать </Link></button>
-                    <button onClick={()=>PostService.deleteIntensiv(localStorage.getItem('id'))}>Удалить</button>
+                <div className="element-list-input flex justify-between">
+                    <button className="button-classic w-100 "><Link to='/createIntensive'>Редактировать </Link></button>
+                    <button className="button-ser" onClick={()=>PostService.deleteIntensiv(localStorage.getItem('id'))}>Удалить</button>
                 </div>
               </div>
             </div>

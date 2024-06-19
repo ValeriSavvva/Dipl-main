@@ -20,6 +20,16 @@ function convertBackDateFormat(isoString) {
     const dateString = date.toISOString().split('T')[0];
     return dateString;
     }
+function convertBackDateFormatDMY(isoString) {
+        const date = new Date(isoString);
+        // Извлекаем день, месяц и год
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        
+        // Собираем все в нужном формате
+        return `${day}-${month}-${year}`;
+    }
 
 function filterNotIncludeObjectsByNames(objects, strings) {
         return objects.filter(obj => !strings.includes(obj.name));
@@ -31,4 +41,5 @@ export {convertDateFormat,
      convertBackDateFormat,
      filterNotIncludeObjectsByNames,
      filterIncludeObjectsByNames,
-     formatDate };
+     formatDate,
+     convertBackDateFormatDMY };

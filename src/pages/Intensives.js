@@ -4,17 +4,31 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Context } from "../context";
 import{formatDate,convertBackDateFormat} from '../utils';
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const Intensives = () => {
 
-  const [idSelectInsensive, setIdSelectInsensive] = useContext(Context);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-  useEffect(()=>{
-    console.log(idSelectInsensive);
-  },[idSelectInsensive]);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+
 
   const [data, setData]=useState(null);
-  const [filter, setFilter] = useState('All');
+  const [filter, setFilter] = useState('all');
+
+  // useEffect(()=>{
+
+  // },[filter])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,11 +37,9 @@ const Intensives = () => {
       }catch(e){
         console.log(e);
       }
-      
+
     };
-
     fetchData();
-
     localStorage.setItem('id', -1)
   }, []);
 
@@ -38,11 +50,11 @@ const Intensives = () => {
     let intensives = data?.results.map((results) => (
 		 <tr key={results.id} className="border-b">
         <td className="px-6 py-4 "><Link to={'/intensiv'} onClick={() => { localStorage.setItem('id', results.id)}}>{results.name} </Link></td>
-        <td className="px-6 py-4">{results.description}</td>
-        <td className="px-6 py-4">{formatDate(convertBackDateFormat(results.created_at))}</td>
-        <td className="px-6 py-4">{formatDate(convertBackDateFormat(results.updated_at))}</td>
-        <td className="px-6 py-4">{results.flow.map((elem)=>(elem))}
-        </td>
+        {(windowWidth < 940)? null:<td className="px-6 py-4">{results.description}</td>}
+        {(windowWidth < 720)? null:<td className="px-6 py-4">{formatDate(convertBackDateFormat(results.created_at))}</td>}
+        {(windowWidth < 720)? null:<td className="px-6 py-4">{formatDate(convertBackDateFormat(results.updated_at))}</td>}
+        {(windowWidth < 470)? null:<td className="px-6 py-4">{results.flow.map((elem)=>(elem))}
+        </td>}
         </tr>
     ));
 
@@ -75,51 +87,54 @@ const Intensives = () => {
               <div className="filter">
                 <button
                   value="active"
-                  // onClick={this.handleFilterChange}
-                  // className={`rounded-md py-2 px-4 ${this.state.filter === "active" ? "font-bold" : ""}`}
+                  onClick={()=>setFilter('active')}
+                  className={`rounded-md py-2 px-4 ${filter === "active" ? "font-bold" : ""}`}
                   >
                   Актуальные
                 </button>
                 <button
                   value="past"
-                  // onClick={this.handleFilterChange}
-                  // className={`rounded-md py-2 px-4 ${this.state.filter === "past" ? "font-bold" : ""}`}
+                  onClick={()=>setFilter('past')}
+                  className={`rounded-md py-2 px-4 ${filter === "past" ? "font-bold" : ""}`}
                   >
                   Прошедшие
                 </button>
                 <button
                   value="all"
-                  // onClick={this.handleFilterChange}
-                  // className={`rounded-md py-2 px-4 ${this.state.filter === "all" ? "font-bold" : ""}`}
+                  onClick={()=>setFilter('all')}
+                  className={`rounded-md py-2 px-4 ${filter === "all" ? "font-bold" : ""}`}
                   >
                   Все
                 </button>
                 <div className="common-line-filter">
-                  {/* <div className={this.state.filter === "active" ? "line-filter" : ""}></div> */}
-                  {/* <div className={this.state.filter === "past" ? "line-filter" : ""}></div> */}
-                  {/* <div className={this.state.filter === "all" ? "line-filter" : ""}></div> */}
+                  <div className={filter === "active" ? "line-filter" : ""}></div>
+                  <div className={filter === "past" ? "line-filter" : ""}></div>
+                  <div className={filter === "all" ? "line-filter" : ""}></div>
                   <div className="black-line-filter"></div>
                 </div>
               </div>
               <div className="overflow-x-auto bg-white rounded-lg">
-                <table className="border rounded table">
+                {
+                  (intensives) ?
+                  (
+                    <table className="border rounded table">
                   <thead className="bg-[#F1F5F9] border-b">
                     <tr>
                       <th className="px-6 py-3 text-left font-semibold">
                         Название
                       </th>
-                      <th className="px-6 py-3 text-left font-semibold">
+                      {(windowWidth < 940)? null:<th className="px-6 py-3 text-left font-semibold">
                         Описание
-                      </th>
-                      <th className="px-6 py-3 text-left font-semibold">
+                      </th>}
+                      {(windowWidth < 720)? null:<th className="px-6 py-3 text-left font-semibold">
                         Начало интенсива
-                      </th>
-                      <th className="px-6 py-3 text-left font-semibold">
+                      </th>}
+                      {(windowWidth < 720)? null:<th className="px-6 py-3 text-left font-semibold">
                         Окончание интенсива
-                      </th>
-                      <th className="px-6 py-3 text-left font-semibold">
+                      </th>}
+                      {(windowWidth < 470)? null:<th className="px-6 py-3 text-left font-semibold">
                         Участники
-                      </th>
+                      </th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -132,6 +147,11 @@ const Intensives = () => {
                     )}
                   </tbody>
                 </table>
+                  ):
+                  (<div style={{ height: '20vh', width: '50vw', overflow: 'hidden'  }}>
+                  <Skeleton height={'100%'} width={'100%'} />
+                </div>)
+                }
               </div>
             </div>
           </div>

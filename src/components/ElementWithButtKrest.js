@@ -3,8 +3,14 @@ import krest from '../icons/krest.svg';
 const ElementWithButtKrest = (props) => {
   return (
     <div className="text-sm elementWithButtonKrest">
-      <span className="">{props.propsName}</span>
-      <button onClick={props.propsDelete}>
+      <span style={{
+            width: '100%',
+            overflow: 'hidden',
+            marginRight: '10px',
+            textOverflow: 'ellipsis'
+      }}
+      className="">{props.propsName}</span>
+      <button style={{height:'12px',width:'12px'}} onClick={props.propsDelete}>
         <img
           height={10}
           width={10}

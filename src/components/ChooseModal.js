@@ -21,21 +21,35 @@ const ChooseModal = (props) => {
   }, [props.items, props.itemsForResults]);
 
   return props.isOpen ? (
-    <div
-      className="absolute bg-white border modal p-8 rounded"
-      style={{
+    <div className="fixed"
+     style={
+      {
         top: "50%",
         left: "50%",
         zIndex: "10",
         transform: "translate(-50%, -50%)",
+        width:'100vw',
+        height: '100vh',
+        backgroundColor:'rgb(0 0 0 / 28%)'
+      }
+      }>
+    <div
+      className=" bg-white border modal p-8 rounded z-10"
+      style={{
+        top: "50%",
+        left: "50%",
+        position:'relative',
+        // zIndex: "10",
+        transform: "translate(-50%, -50%)",
         width: "60vw",
-        height: "60vh",
+        height: 'max-content'
       }}
     >
       <div
-        className=""
+        className="w-100"
         style={{
           position: "relative",
+          height:'100%'
         }}
       >
         <div
@@ -74,9 +88,10 @@ const ChooseModal = (props) => {
             ))}
           </div>
           <div
-            className=" w-full"
+            className="flex w-full"
             style={{
-              height: "20vh",
+              height: "max-content",
+              minHeight:'5vh'
             }}
           >
             {selectedItem?.map((elem) => (
@@ -103,6 +118,7 @@ const ChooseModal = (props) => {
           </button>
         </div>
       </div>
+    </div>
     </div>
   ) : null;
 };

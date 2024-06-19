@@ -6,6 +6,18 @@ import {formatDate, convertBackDateFormat} from '../utils'
 
 const SideMenu = () => {
 
+	const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+	useEffect(() => {
+	  const handleResize = () => {
+		setWindowWidth(window.innerWidth);
+	  };
+	  window.addEventListener('resize', handleResize);
+	  return () => {
+		window.removeEventListener('resize', handleResize);
+	  };
+	}, []);
+
 	const [visible, setVisible] = useState(false);
 	const [data, setData] = useState();
 
@@ -28,7 +40,7 @@ const SideMenu = () => {
 	}, [])
 
 	return (
-		(visible)?
+		(visible && windowWidth>600)?
 		(
 		<div className="side-menu-cont">
 			<div className="column-container">

@@ -1,15 +1,8 @@
 import React, { Component, useEffect, useState } from "react";
 import SideMenu from "./SideMenu";
 import { InputDescription } from "./InputDescription";
-import { InputRadio } from "./InputRadio";
-import { InputRadioDescription } from "./InputRadioDescription";
-import { InputDelete } from "./InputDelete";
-import { InputDeleteConteiner } from "./InputDeleteConteiner";
-import { SelectDescription } from "./SelectDescription";
 import { ChooseModal } from "./ChooseModal";
 import PostService from "../API/PostService";
-import { useContext } from "react";
-import { Context } from "../context";
 import { Link } from "react-router-dom";
 import {convertDateFormat,
    convertBackDateFormat,
@@ -82,7 +75,7 @@ const ListCreateIntensiv = (props) => {
           setFlows(filterIncludeObjectsByNames(response[1].value.data.results, response[3].value.data.flow));
           setResponseFlows(filterNotIncludeObjectsByNames(response[1].value.data.results, response[3].value.data.flow));
           setStudentRoles(filterIncludeObjectsByNames(response[2].value.data.results, response[3].value.data.roles));
-          setResponseFlows(filterNotIncludeObjectsByNames(response[2].value.data.results, response[3].value.data.roles));
+          setResponseStudentRoles(filterNotIncludeObjectsByNames(response[2].value.data.results, response[3].value.data.roles));
           setTeachers(response[3].value.data.teacher_command.map((teacher) => {
             return { id: teacher.teacher.user.id, name: teacher.teacher.user.last_name };
           }))
@@ -96,6 +89,8 @@ const ListCreateIntensiv = (props) => {
   const handleSubmit = async() => {
     // e.preventDefault();
     try {
+      if (!intensiveName && !intensiveDescription && !dateEnd && !dateStart )
+        throw new Error('Необходимо заполнить поля: intensiveName, intensiveDescription, dateEnd, dateStart');
       const ids_studentRoles = studentRoles?.map((item) => item.id);
       const ids_flows = flows?.map((item) => item.id);
       const ids_teachers = teachers?.map((item) => item.id);
@@ -122,14 +117,14 @@ const ListCreateIntensiv = (props) => {
       )
 
       if (response) {
-        localStorage.setItem('id',response.data.id)
+        localStorage.setItem('id',response.data.id);
+        window.location.href='/intensiv';
       } 
 		else {
       }
     } catch (error) {
       console.error(error);
-      console.log();
-      alert("Ошибка авторизации");
+      alert(error);
     }
   };
 
@@ -215,14 +210,14 @@ const ListCreateIntensiv = (props) => {
                
                 <div className="element-list-input column-container">
                   <div className="">Список преподаватель</div>
-                  <button type="button" onClick={() => setWindowTeachers(true)}>
+                  <button className="button-classic button-classic-dop" type="button" onClick={() => setWindowTeachers(true)}>
                     {" "}
                     Выбрать{" "}
                   </button>
-                  <div className="flex">
+                  <div className="flex flex-wrap">
                     {teachers.length > 0 ? (
                       teachers.map((item) => (
-                        <div className="ml-4 text-sm element-st">
+                        <div className="ml-4 text-sm selectedInList">
                           {item.name}
                         </div>
                       ))
@@ -236,14 +231,14 @@ const ListCreateIntensiv = (props) => {
 
                 <div className="element-list-input column-container">
                   <div className="">Список учебных групп</div>
-                  <button type="button" onClick={() => setWindowFlows(true)}>
+                  <button className="button-classic button-classic-dop" type="button" onClick={() => setWindowFlows(true)}>
                     {" "}
                     Выбрать{" "}
                   </button>
-                  <div className="flex">
+                  <div className="flex flex-wrap">
                     {flows.length > 0 ? (
                       flows.map((item) => (
-                        <div className="ml-4 text-sm element-st">
+                        <div className="ml-4 text-sm selectedInList">
                           {item.name}
                         </div>
                       ))
@@ -254,17 +249,17 @@ const ListCreateIntensiv = (props) => {
                 </div>
                 <div className="element-list-input column-container">
                   <div className="">Список ролей для студентов</div>
-                  <button
+                  <button className="button-classic button-classic-dop"
                     type="button"
                     onClick={() => setWindowStudRoles(true)}
                   >
                     {" "}
                     Выбрать{" "}
                   </button>
-                  <div className="flex">
+                  <div className="flex flex-wrap">
                     {flows.length > 0 ? (
                       studentRoles.map((item) => (
-                        <div className="ml-4 text-sm element-st">
+                        <div className="ml-4 text-sm selectedInList">
                           {item.name}
                         </div>
                       ))
@@ -296,7 +291,7 @@ const ListCreateIntensiv = (props) => {
                     />
                   </div>
                 </div>
-                <div>
+                <div className="element-list-input">
                   <Link
                   //  to={`/intensiv`}
                     className="button-classic margin element-list-input"

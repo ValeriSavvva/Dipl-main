@@ -22,6 +22,7 @@ import ManageMenu from "./pages/ManageMenu";
 import ManageRoles from "./pages/ManageLists/ManageRole";
 import ManageProfile from "./pages/ManageLists/ManageProfile";
 import StatisticsIntensive from "./pages/StatisticsIntensive";
+import CreateEvent from './pages/CreateEvent';
 
 var Roles = {
   Admin: 0
@@ -76,6 +77,8 @@ function App() {
    <Route path='/editRoles' element={<ManageRoles />} 
           requiredAuthorization={true} accessUser={Roles.Admin}></Route>
   <Route path='/editProfile' element={<ManageProfile />} 
+          requiredAuthorization={true} accessUser={Roles.Admin}></Route>
+      <Route path='/editEvent' element={<CreateEvent />} 
           requiredAuthorization={true} accessUser={Roles.Admin}></Route>
   {/* <Route path='/editAudit' element={<Mana />} 
           requiredAuthorization={true} accessUser={Roles.Admin}></Route>

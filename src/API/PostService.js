@@ -1,12 +1,11 @@
 import axios from "axios";
 
 export default class PostService {
-
   static token = document.cookie.split("=")[1];
   static config = {
     headers: {
-      Authorization: `Bearer ${PostService.token}`
-    }
+      Authorization: `Bearer ${PostService.token}`,
+    },
   };
 
   static async postAuthorization(login, pass) {
@@ -15,7 +14,7 @@ export default class PostService {
       password: pass,
     });
     const token = response.data.access;
-    document.cookie = `token=${token}`
+    document.cookie = `token=${token}`;
     return response;
   }
   static async getStudenRoles() {
@@ -26,6 +25,43 @@ export default class PostService {
     return response;
   }
 
+  static async getCommandsOnIntensive(id) {
+    const token = document.cookie.split("=")[1];
+    const response = axios.get(
+      `https://m.x09.ru/api/commands_on_intensives/?intensive=${id}`,
+      {
+        headers: `Authorization: Bearer ${token}`,
+      }
+    );
+    return response;
+  }
+
+  static async getTeachersOnIntensive(id) {
+    const token = document.cookie.split("=")[1];
+    const response = axios.get(
+      `https://m.x09.ru/api/teachers_on_intensives/?intensive=${id}`,
+      {
+        headers: `Authorization: Bearer ${token}`,
+      }
+    );
+    return response;
+  }
+
+  static async getAuditorii() {
+    const token = document.cookie.split("=")[1];
+    const response = axios.get(`https://m.x09.ru/api/auditories/`, {
+      headers: `Authorization: Bearer ${token}`,
+    });
+    return response;
+  }
+
+  static async getStage() {
+    const token = document.cookie.split("=")[1];
+    const response = axios.get(`https://m.x09.ru/api/stages/`, {
+      headers: `Authorization: Bearer ${token}`,
+    });
+    return response;
+  }
 
   static async getTeachers() {
     const token = document.cookie.split("=")[1];
@@ -35,54 +71,165 @@ export default class PostService {
     return response;
   }
 
-  static async postIntensives(name, description, startDate, endDate, flows, teachers, rolesStudent, files ) {
-    const response = await axios.post("https://m.x09.ru/api/intensives/", {
-      university:1,
-      name: name,
-      description: description,
-      is_open: true,
-      open_dt: startDate,
-      close_dt: endDate,
-      roles:rolesStudent,
-      flow: flows || [],
-      teachers_command: teachers || [],
-      files: files || [],
-      stages:[]
-    }, PostService.config);
+  static async postIntensives(
+    name,
+    description,
+    startDate,
+    endDate,
+    flows,
+    teachers,
+    rolesStudent,
+    files
+  ) {
+    const response = await axios.post(
+      "https://m.x09.ru/api/intensives/",
+      {
+        university: 1,
+        name: name,
+        description: description,
+        is_open: true,
+        open_dt: startDate,
+        close_dt: endDate,
+        roles: rolesStudent,
+        flow: flows || [],
+        teachers_command: teachers || [],
+        files: files || [],
+        stages: [],
+      },
+      PostService.config
+    );
     return response;
   }
-  static async patchIntensives(name, description, startDate, endDate, flows, teachers, rolesStudent, files ) {
+  static async patchIntensives(
+    name,
+    description,
+    startDate,
+    endDate,
+    flows,
+    teachers,
+    rolesStudent,
+    files
+  ) {
     const token = document.cookie.split("=")[1];
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     };
-    console.log('id',localStorage.getItem('id'));
-    const response = await axios.patch(`https://m.x09.ru/api/intensives/${localStorage.getItem('id')}/`, {
-      name: name,
-      description: description,
-      is_open: true,
-      open_dt: startDate,
-      close_dt: endDate,
-      roles:rolesStudent,
-      flow: flows || [],
-      teachers_command: teachers || [],
-      files: files || [],
-      stages:[]
-    },config);
+    console.log("id", localStorage.getItem("id"));
+    const response = await axios.patch(
+      `https://m.x09.ru/api/intensives/${localStorage.getItem("id")}/`,
+      {
+        name: name,
+        description: description,
+        is_open: true,
+        open_dt: startDate,
+        close_dt: endDate,
+        roles: rolesStudent,
+        flow: flows || [],
+        teachers_command: teachers || [],
+        files: files || [],
+        stages: [],
+      },
+      config
+    );
+    return response;
+  }
+  static async postEvent(
+    name,
+    description,
+    startDate,
+    endDate,
+    teachers,
+    commands,
+    stage,
+    auditory,
+    typeScore,
+    typeResult
+  ) {
+    const token = document.cookie.split("=")[1];
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const idInt = localStorage.getItem("id");
+    const idEvent = localStorage.getItem("idEvent");
+    const response = await axios.post(
+      `https://m.x09.ru/api/events/`,
+      {
+        name: name,
+        description: description,
+        start_dt: startDate,
+        finish_dt: endDate,
+        stage: stage,
+        auditory: auditory,
+        mark_strategy_id: 1,
+        result_type: 1,
+        intensiv: idInt,
+        commands: commands || [],
+        teachers_command: teachers || [],
+      },
+      config
+    );
+    return response;
+  }
+
+  static async patchEvent(
+    name,
+    description,
+    startDate,
+    endDate,
+    teachers,
+    commands,
+    stage,
+    auditory,
+    typeScore,
+    typeResult
+  ) {
+    const token = document.cookie.split("=")[1];
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    const idInt = localStorage.getItem("id");
+    const idEvent = localStorage.getItem("idEvent");
+    const response = await axios.patch(
+      `https://m.x09.ru/api/events/${idEvent}/`,
+      {
+        name: name,
+        description: description,
+        start_dt: startDate,
+        finish_dt: endDate,
+        stage: stage,
+        auditory: auditory,
+        mark_strategy_id: typeScore || 1,
+        result_type: typeResult || 1,
+        intensiv: idInt,
+        commands: commands || [],
+        teachers_command: teachers || [],
+      },
+      config
+    );
     return response;
   }
 
   static async postStudentsRole(name) {
-    const response = await axios.post("https://m.x09.ru/api/roles_on_intensives/", {
-      name: name,
-     
-    },PostService.config);
+    const response = await axios.post(
+      "https://m.x09.ru/api/roles_on_intensives/",
+      {
+        name: name,
+      },
+      PostService.config
+    );
     return response;
   }
   static async deleteStudentsRole(id) {
-    const response = await axios.delete(`https://m.x09.ru/api/roles_on_intensives/${id}/`,PostService.config);
+    const response = await axios.delete(
+      `https://m.x09.ru/api/roles_on_intensives/${id}/`,
+      PostService.config
+    );
     return response;
   }
 
@@ -96,9 +243,12 @@ export default class PostService {
 
   static async deleteIntensiv(id) {
     const token = document.cookie.split("=")[1];
-    const response = await axios.delete(`https://m.x09.ru/api/intensives/${id}`, {
-      headers: `Authorization: Bearer ${token}`,
-    });
+    const response = await axios.delete(
+      `https://m.x09.ru/api/intensives/${id}`,
+      {
+        headers: `Authorization: Bearer ${token}`,
+      }
+    );
     return response;
   }
 
@@ -113,10 +263,24 @@ export default class PostService {
     const token = document.cookie.split("=")[1];
     const response = await axios.get("https://m.x09.ru/api/criteria/");
   }
-  static async getEvents() {
+  static async getEvents(id) {
     const token = document.cookie.split("=")[1];
-    const response = await axios.get("https://m.x09.ru/api/events/");
+    const response = await axios.get(
+      `https://m.x09.ru/api/events/?intensiv=${id}`,
+      {
+        headers: `Authorization: Bearer ${token}`,
+      }
+    );
+    return response;
   }
+  static async getEvent(id) {
+    const token = document.cookie.split("=")[1];
+    const response = await axios.get(`https://m.x09.ru/api/events/${id}/`, {
+      headers: `Authorization: Bearer ${token}`,
+    });
+    return response;
+  }
+
   static async getGroups() {
     const token = document.cookie.split("=")[1];
     const response = await axios.get("https://m.x09.ru/api/groups/");
@@ -162,20 +326,26 @@ export default class PostService {
     return response;
   }
 
-	//Страница статистики
-	static async getStatisticsIntensiv(id) {
+  //Страница статистики
+  static async getStatisticsIntensiv(id) {
     const token = document.cookie.split("=")[1];
-		const response = await axios.get(`https://m.x09.ru/api/statistics/intensiv/${id}`, {
-			headers: `Authorization: Bearer ${token}`,
-		});
-		return response;
-	}
+    const response = await axios.get(
+      `https://m.x09.ru/api/statistics/intensiv/${id}`,
+      {
+        headers: `Authorization: Bearer ${token}`,
+      }
+    );
+    return response;
+  }
 
-	static async getStatisticsCommand(id) {
+  static async getStatisticsCommand(id) {
     const token = document.cookie.split("=")[1];
-		const response = await axios.get(`https://m.x09.ru/api/statistics/command/${id}`, {
-			headers: `Authorization: Bearer ${token}`,
-		});
-		return response;
-	}
+    const response = await axios.get(
+      `https://m.x09.ru/api/statistics/command/${id}`,
+      {
+        headers: `Authorization: Bearer ${token}`,
+      }
+    );
+    return response;
+  }
 }

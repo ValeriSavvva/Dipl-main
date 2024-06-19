@@ -134,7 +134,7 @@
 
 
 .main-block {
-  max-width: 100vw;
+  max-width: 100%;
   display: flex;
   justify-content: center;
   /* background-color: #3a3f47; */
@@ -150,17 +150,36 @@
   display: flex;
   /* background-color: #637087; */
   max-width: 1280px;
-	width:50vw;
+	min-width: 50vw;
   min-height: 100vh;
   justify-content: center;
 
 
 }
 
+.selectedInList{
+  background-color: #E8EDF2;
+  height: -moz-fit-content;
+  height: fit-content;
+  padding: 3px 10px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: max-content;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  margin: 2px 2px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.flex-wrap{
+  flex-wrap: wrap;
+}
+
 
 .list-content {
-  width: 765px;
-  /* background-color: #E5E8EB; */
+  max-width: 765px;
+  width: 100%;
   padding: 15px;
 }
 
@@ -289,12 +308,20 @@
 
 .element-st {
   background-color: #E8EDF2;
+  height: fit-content;
   padding: 2px 8px;
   border-radius: 10px;
   max-width: 10vw;
   overflow: hidden;
   text-wrap: nowrap;
   text-overflow: ellipsis;
+}
+.ten ::before{
+  content: '';
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  z-index: 2;
 }
 
 
@@ -303,6 +330,10 @@
   color: white;
   padding: 5px 16px;
   border-radius: 10px;
+}
+.button-classic-dop{
+  width: max-content;
+  margin: 10px 0;
 }
 
 
@@ -340,6 +371,9 @@ table td {
   text-wrap: wrap;
   font-size: 16px;
   text-overflow: ellipsis;
+  border-radius: 3px;
+  max-width: 250px;
+  overflow: hidden;
 }
 
 
@@ -503,5 +537,8 @@ table tr:last-child td:last-child {
 }
 .align-center{
 	align-items: center;
+}
+table{
+  border-collapse: unset !important;
 }
 

@@ -22,7 +22,7 @@ class Header extends Component {
             </div>
           </div>
         </div>
-        <div className="">
+        <div className="flex">
           <div className="header-container-row-buttons">
             <div className="button-square">
               <img
@@ -30,7 +30,7 @@ class Header extends Component {
                 alt="logo"
               ></img>
             </div>
-            <div className="button-square">
+            <div className="button-square" onClick={()=>{document.cookie = 'token =; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; window.location.href='/'}}>
               <img
                 src="https://cdn.animaapp.com/projects/66178f6565c5717abaa98a66/releases/66179015c39a2cda9c36b812/img/vector-1.svg"
                 alt="logo"
