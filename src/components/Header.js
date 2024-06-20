@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import PostService from "../API/PostService";
 
 class Header extends Component {
   render() {
@@ -24,18 +25,11 @@ class Header extends Component {
         </div>
         <div className="flex">
           <div className="header-container-row-buttons">
-            <div className="button-square">
-              <img
-                src="https://cdn.animaapp.com/projects/66178f6565c5717abaa98a66/releases/66179015c39a2cda9c36b812/img/vector---0-1.svg"
-                alt="logo"
-              ></img>
-            </div>
-            <div className="button-square" onClick={()=>{document.cookie = 'token =; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; window.location.href='/'}}>
-              <img
-                src="https://cdn.animaapp.com/projects/66178f6565c5717abaa98a66/releases/66179015c39a2cda9c36b812/img/vector-1.svg"
-                alt="logo"
-              ></img>
-            </div>
+          {(PostService.token)?
+          <div className="button-ser" onClick={()=>{document.cookie = 'token =; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; window.location.href='/'}}>
+             Выход
+          </div>
+          :null}
           </div>
         </div>
       </div>

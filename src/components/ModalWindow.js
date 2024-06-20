@@ -18,10 +18,10 @@ const Modal = ({ isOpen, onClose }) => {
           участников в группах
         </div>
         <div className="flex justify-end">
-          <button className="" onClick={() => onClose(false)}>
+          <button className="button-ser" onClick={() => onClose(false)}>
             Очистить группы
           </button>
-          <button className="" onClick={() => onClose(true)}>
+          <button style={{marginLeft:'10px'}} className="button-classic" onClick={() => onClose(true)}>
             Сохранить участников
           </button>
         </div>

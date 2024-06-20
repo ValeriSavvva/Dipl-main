@@ -41,7 +41,7 @@ const ChooseModal = (props) => {
         position:'relative',
         // zIndex: "10",
         transform: "translate(-50%, -50%)",
-        width: "60vw",
+        width: "70vw",
         height: 'max-content'
       }}
     >
@@ -59,7 +59,7 @@ const ChooseModal = (props) => {
           }}
         >
           <div className="flex">
-            <div className="border-b text-lg">Заголовок</div>
+            <div className="border-b text-lg">Выберите элементы</div>
             <button
               className="margin-right"
               onClick={() => props.onClose(false)}
@@ -73,30 +73,30 @@ const ChooseModal = (props) => {
             className="w-full element-input-style"
           />
           <div
-            className="container-model-choose w-full"
-            style={{
+            className="container-model-choose w-full flex flex-wrap"
+            style={(items.length>0)?{}:{
               height: "20vh",
             }}
           >
             {items.map((elem) => (
               <div
                 onClick={() => addItem(elem)}
-                className="ml-4 text-sm element-st"
+                className="ml-4 text-sm selectedInList"
               >
                 {elem.name}
               </div>
             ))}
           </div>
           <div
-            className="flex w-full"
+            className="flex flex-wrap w-full"
             style={{
               height: "max-content",
               minHeight:'5vh'
             }}
           >
             {selectedItem?.map((elem) => (
-              <div className="smile">
-                <span className="ml-4 text-sm element-st">{elem.name}</span>
+              <div style={{marginRight:'10px'}} className="smile align-center flex flex-nowrap">
+                <span className="ml-4 text-sm selectedInList">{elem.name}</span>
                 <button
                   onClick={() => {
                     deleteItem(elem);

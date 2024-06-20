@@ -23,7 +23,9 @@ import ManageRoles from "./pages/ManageLists/ManageRole";
 import ManageProfile from "./pages/ManageLists/ManageProfile";
 import StatisticsIntensive from "./pages/StatisticsIntensive";
 import CreateEvent from './pages/CreateEvent';
-
+import PostService from "./API/PostService";
+import { Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 var Roles = {
   Admin: 0
 };
@@ -90,6 +92,7 @@ function App() {
           requiredAuthorization={true} accessUser={Roles.Admin}></Route> */}
 	<Route path='/statisticsIntensive' element={<StatisticsIntensive />}
 				  requiredAuthorization={true}></Route>
+
   </Routes>
 
   </Context.Provider>

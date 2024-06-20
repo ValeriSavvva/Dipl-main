@@ -9,6 +9,22 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const Intensives = () => {
 
+    const [data, setData]=useState(null);
+  const [filter, setFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState("");
+const [filteredData, setFilteredData] = useState([]);
+
+const handleSearch = (event) => {
+  const query = event.target.value;
+  setSearchQuery(query);
+
+  const filteredIntensives = data?.results.filter(
+    (result) =>
+      result.name.toLowerCase().includes(query.toLowerCase())
+  );
+  setFilteredData(filteredIntensives);
+};
+
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -23,8 +39,6 @@ const Intensives = () => {
 
 
 
-  const [data, setData]=useState(null);
-  const [filter, setFilter] = useState('all');
 
   // useEffect(()=>{
 
@@ -39,15 +53,25 @@ const Intensives = () => {
       }
 
     };
+    if(!PostService.token){window.location.href='/'}
     fetchData();
     localStorage.setItem('id', -1)
   }, []);
 
-  const fillIntensiveTable=()=> {
-    if (!data) {
+  const fillIntensiveTable=(props)=> {
+    if (!data ) {
       return null;
     }
-    let intensives = data?.results.map((results) => (
+    let intensives = ((props)?props:data.results).filter((result) => {
+      // Фильтрация по полю is_open и текущему значению фильтра
+      if (filter === 'active') {
+        return result.is_open;
+      } else if (filter === 'past') {
+        return !result.is_open;
+      } else {
+        return true; // Отображение всех интенсивов при значении 'all' фильтра
+      }
+    }).map((results) => (
 		 <tr key={results.id} className="border-b">
         <td className="px-6 py-4 "><Link to={'/intensiv'} onClick={() => { localStorage.setItem('id', results.id)}}>{results.name} </Link></td>
         {(windowWidth < 940)? null:<td className="px-6 py-4">{results.description}</td>}
@@ -66,12 +90,12 @@ const Intensives = () => {
   //   this.setState({ filter: event.target.value });
   // }
 
-  let intensives=fillIntensiveTable();
+  let intensives = searchQuery ? fillIntensiveTable(filteredData) : fillIntensiveTable();
 
     return (
       <div className="main-block">
-        <div className="center-block">
-          <div className="">
+        <div className="center-block w-100">
+          <div className=" w-100">
             <div className="bg-[#FFFFFF] p-6 w-full flex flex-col">
               <div className="title font-32">Интенсивы</div>
               <button className="button-classic margin-right">
@@ -79,7 +103,9 @@ const Intensives = () => {
               </button>
 
               <div className="search-full-screen">
-                <input className="w-full" name="search" placeholder="Поиск" />
+                <input className="w-full" name="search" placeholder="Поиск" 
+                value={searchQuery}
+                onChange={handleSearch}/>
               </div>
             </div>
 
@@ -113,11 +139,11 @@ const Intensives = () => {
                   <div className="black-line-filter"></div>
                 </div>
               </div>
-              <div className="overflow-x-auto bg-white rounded-lg">
+              <div className="overflow-x-auto bg-white rounded-lg  w-100">
                 {
                   (intensives) ?
                   (
-                    <table className="border rounded table">
+                    <table className="border rounded table  w-100">
                   <thead className="bg-[#F1F5F9] border-b">
                     <tr>
                       <th className="px-6 py-3 text-left font-semibold">

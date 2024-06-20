@@ -25,6 +25,7 @@ const CreateIntensive = () => {
         });
         }
         
+        if(!PostService.token){window.location.href='/'};
         fetchDataAndSet();
   }, []);
 

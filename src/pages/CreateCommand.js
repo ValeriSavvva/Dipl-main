@@ -9,16 +9,16 @@ import Modal from '../components/ModalWindow'
 
 const base = [    
   { index: 0, content: 'Мындрила М.А,' },
-  { index: 1, content: 'Сындрила М.А,' },
-  { index: 2, content: 'Иындрила М.А,' },
-  { index: 3, content: 'Тындрила М.А,' },
-  { index: 4, content: 'Уындрила М.А,' },
-  { index: 5, content: 'Шындрила М.А,' },
-  { index: 6, content: 'Зындрила М.А,' },
-  { index: 7, content: 'Мындрила М.А,' },
-  { index: 8, content: 'Мындрила М.А,' },
-  { index: 9, content: 'Мындрила М.А,' },
-  { index: 10, content: 'Мындрила М.А,' }]
+  { index: 1, content: 'Савенко М.А,' },
+  { index: 2, content: 'Иванов М.А,' },
+  { index: 3, content: 'Кузнецов М.А,' },
+  { index: 4, content: 'Хлебников М.А,' },
+  { index: 5, content: 'Шадрин М.А,' },
+  { index: 6, content: 'Кудров М.А,' },
+  { index: 7, content: 'Краснов М.А,' },
+  { index: 8, content: 'Тереньтьев М.А,' },
+  { index: 9, content: 'Краснов М.А,' },
+  { index: 10, content: 'Иванов М.А,' }]
 
 const TEAM_NAMES = [{id:'Команда1', name:"Команда 1"}, {id:'Команда2', name:"Команда 2"}];
 

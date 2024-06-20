@@ -31,6 +31,7 @@ const Intensiv = (props) => {
       
     };
 
+    if(!PostService.token){window.location.href='/'}
     fetchData();
   });
 

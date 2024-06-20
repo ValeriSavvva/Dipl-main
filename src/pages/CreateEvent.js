@@ -119,6 +119,7 @@ const CreateEvent = (props) => {
       });
     };
 
+    if(!PostService.token){window.location.href='/'}
     fetchData();
   }, []);
 

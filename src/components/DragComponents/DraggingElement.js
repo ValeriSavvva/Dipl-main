@@ -23,7 +23,7 @@ const DraggingElement = ({ data, func, dragElements, deleteI }) => {
 
     return (
       <div ref={dragRef} className="smile" draggable >
-        <span className="ml-4 text-sm element-st">{data.content}</span><button onClick={()=>{deleteI(data)}}>X</button>
+        <span className="ml-4 text-sm element-st">{data.content}</span><button onClick={()=>{deleteI(data)}}>✕</button>
       </div>
     );
   };
